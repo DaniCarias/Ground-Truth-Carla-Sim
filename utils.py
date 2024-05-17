@@ -181,7 +181,7 @@ def point2D_to_point3D(image_depth, image_rgb, intrinsic_matrix):
 # Load the C library to downsample the point cloud
 pcl_lib = ctypes.cdll.LoadLibrary("./pcl_downsample/build/libpcl_downsample.so")
 
-def downsample(points, colors):
+def downsample(points, colors, leaf_size):
     """
     The function `downsample` takes in arrays of points and colors, passes them to a C function for
     downsampling, and returns the downsampled points and colors.
@@ -190,6 +190,7 @@ def downsample(points, colors):
                    Each row of the array represents a point in 3D space with its x, y, and z coordinates.
     :param colors: The `colors` parameter is expected to be a numpy array containing the RGB of points in a point cloud.
                    Each row of the array represents a point in 3D space with its R, G, and B colors.
+    :param leaf_size: The `leaf_size` parameter is the size of the leaf for the downsampling algorithm.
     :return: The `downsample` function returns two numpy arrays: `output_points` and `output_colors`,
              which contain the downsampled points and colors of the point cloud, respectively.
     """
@@ -197,7 +198,7 @@ def downsample(points, colors):
     ND_POINTER = np.ctypeslib.ndpointer(dtype=np.float64, ndim=2, flags="C")
     
     # Define the prototype of the function
-    pcl_lib.pcl_downSample.argtypes = [ND_POINTER, ND_POINTER, ctypes.c_size_t, ND_POINTER, ND_POINTER]
+    pcl_lib.pcl_downSample.argtypes = [ND_POINTER, ND_POINTER, ctypes.c_float, ctypes.c_size_t, ND_POINTER, ND_POINTER]
     pcl_lib.pcl_downSample.restype = ctypes.c_int
     
     # put the arrays in a contiguous memory to pass to the C function
@@ -209,6 +210,6 @@ def downsample(points, colors):
     output_colors = np.empty((colors.shape[0], 3)).astype(np.float64)
     
     # Call the C function to downsample the point cloud
-    pcl_lib.pcl_downSample(points, colors, ctypes.c_size_t(points.size//3), output_points, output_colors)
+    pcl_lib.pcl_downSample(points, colors, ctypes.c_float(float(leaf_size)), ctypes.c_size_t(points.size//3), output_points, output_colors)
 
     return output_points, output_colors

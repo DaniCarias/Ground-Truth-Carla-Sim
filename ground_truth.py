@@ -13,6 +13,7 @@ parser = argparse.ArgumentParser(
 )
 parser.add_argument('--frames', '-F', default='40', help='Interval of frames to get the point cloud')
 parser.add_argument('--pcl', '-P', help='Point Cloud path, if you want to add more pointclouds to an existing Point Cloud file')
+parser.add_argument('--leaf_size', '-L', default='0.1', help='Leaf size to downsample the point cloud (default = 10cm)')
 
 arguments = parser.parse_args()
 
@@ -159,7 +160,7 @@ def main():
                 
                 print("\n")
                 # Downsample the point cloud
-                downsampled_points, downsampled_colors = downsample(points, colors)
+                downsampled_points, downsampled_colors = downsample(points, colors, arguments.leaf_size)
                 print("\n")
                 
                 # Clear the points and colors to get the next frame

@@ -8,7 +8,7 @@
 
 
 extern "C"{
-    void pcl_downSample(double *array_points, double *array_color, size_t n_points, double *downsample_points, double *downsample_colors){
+    void pcl_downSample(double *array_points, double *array_color, size_t n_points, float leaf_size, double *downsample_points, double *downsample_colors){
         /* The function `pcl_downSample` is downsampling a point cloud represented by the input arrays `array_points` and `array_color`.
             It takes in the following parameters:
         - `array_points`: An array containing the x, y, z coordinates of the points in the point cloud.
@@ -43,7 +43,6 @@ extern "C"{
 
         std::cout << "PointCloud before filtering: " << cloud->width * cloud->height << " data points (" << pcl::getFieldsList (*cloud) << ")." << std::endl;
 
-        float leaf_size = 0.2;
         std::cout << "Downsampling with leaf size of " << leaf_size << "... \n";
 
         // Downsample the point cloud
