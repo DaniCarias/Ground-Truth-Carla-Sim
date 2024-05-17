@@ -21,7 +21,6 @@ def main():
     actor_list = []
     IMG_WIDTH = 1280 # 800
     IMG_HEIGHT = 720 # 600
-    PCL_PAHT = "./output/"
     colors = np.empty((0, 3))
     points = np.empty((0, 3))
     
@@ -179,7 +178,7 @@ def main():
                 pcl_downsampled.colors.extend(frame_pcl_downsampled.colors)
                 
                 print("Saving the downsampled point cloud...")
-                o3d.io.write_point_cloud(f"{PCL_PAHT}ground_truth_downsampled.ply", pcl_downsampled)
+                o3d.io.write_point_cloud(f"./ground_truth_downsampled.ply", pcl_downsampled)
                 
                 print(f"---> Total Downsampled {pcl_downsampled}")
                 o3d.visualization.draw_geometries([pcl_downsampled]) # If you want to see the total point cloud every 120 frames
