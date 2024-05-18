@@ -1,4 +1,3 @@
 __pycache__
 *.ply
-/build/*
-!/build/.gitkeep
+build/*
