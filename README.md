@@ -17,7 +17,7 @@ cd [YOUR-PATH-TO-CARLA]
 python3 ground_truth.py
 ```
 #### You can define...
-* The range of frame to obtain a Point Cloud (default = 40):
+* The range of frame to obtain a Point Cloud (default = 20):
 ```
 python3 ground_truth.py -F 30
 ```
@@ -25,12 +25,12 @@ python3 ground_truth.py -F 30
 ```
 python3 ground_truth.py -P [PATH-TO-PCL-FILE]
 ```
-* The leaf size you want to downsample the Point Cloud (default = 0.1 (10cm)):
+* The leaf size you want to downsample the Point Cloud (default = 0.05 (5cm)):
 ```
-python3 ground_truth.py -L 0.2
+python3 ground_truth.py -L 0.1
 ```
 ### To save and view the Point Cloud ground truth
-If you want to finish the 3D mapping click on the "Q" key to save and view the PCL.
+If you want to finish the 3D mapping click on the `"Q"` key to save and view the PCL.
 
 ### If you only want to view the Point Cloud file
 ```
