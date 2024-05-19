@@ -29,7 +29,13 @@ python3 ground_truth.py -P [PATH-TO-PCL-FILE]
 ```
 python3 ground_truth.py -L 0.2
 ```
+### To save and view the Point Cloud ground truth
+If you want to finish the 3D mapping click on the "Q" key to save and view the PCL.
 
+### If you only want to view the Point Cloud file
+```
+python3 visualize_pcl.py
+```
 
 ## Notes
 Based on this [repo](https://github.com/iaoqian/carla_3d-mapping_and_adding_virtual_objects/tree/main), I created my version with downsampling and some changes.
