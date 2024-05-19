@@ -1,7 +1,7 @@
 # Get Point Cloud ground truth of a map in Carla Sim
 
 3D mapping in Carla Sim using RGB and Depth cameras to obtain the ground truth in a point cloud format.
-The point cloud is downsampled using voxelgrid filter with PCL library.
+The point cloud is downsampled using a voxelgrid filter with PCL library.
 
 
 ## Quick Start
@@ -29,3 +29,9 @@ python3 ground_truth.py -P [PATH-TO-PCL-FILE]
 ```
 python3 ground_truth.py -L 0.2
 ```
+
+
+## Notes
+Based on this [repo](https://github.com/iaoqian/carla_3d-mapping_and_adding_virtual_objects/tree/main), I created my version with downsampling and some changes.
+
+
