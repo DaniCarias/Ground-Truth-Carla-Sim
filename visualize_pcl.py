@@ -5,6 +5,7 @@ from open3d import visualization
 def main():
 
     cloud = o3d.io.read_point_cloud('./ground_truth_downsampled.ply')
+    print(cloud)
     visualization.draw_geometries([cloud])    
 
 if __name__ == "__main__":

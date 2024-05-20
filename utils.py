@@ -42,7 +42,7 @@ def setup_carla():
 
 def spawn_vehicle(world, blueprint_library):
     # Get the blueprint for the vehicle - Tesla Model 3
-    bp = blueprint_library.filter('model3')[0]
+    bp = blueprint_library.filter('microlino')[0]
 
     transform = world.get_map().get_spawn_points()[random.randint(0, 30)]
     
@@ -159,23 +159,23 @@ def point2D_to_point3D(image_depth, image_rgb, intrinsic_matrix):
     v_coord = repmat(np.c_[image_depth.height-1:-1:-1],
                      1, image_depth.width).reshape(pixel_length)
     
+    depth_in_meters = normalized_depth*1000
     
-    # Delete the pixels with depth > 0.9
-    max_depth_indexes = np.where(normalized_depth > 0.09)
+    # get only the points with depth less than 40 meters
+    max_depth_indexes = np.where(depth_in_meters > 40)
     
-    normalized_depth = np.delete(normalized_depth, max_depth_indexes)
+    depth_in_meters = np.delete(depth_in_meters, max_depth_indexes)
     u_coord = np.delete(u_coord, max_depth_indexes)
     v_coord = np.delete(v_coord, max_depth_indexes)
     color = np.delete(color, max_depth_indexes, axis=0)
     
-    depth_in_meters = normalized_depth*1000
     
     # Convert the 2D pixel coordinates to 3D points
     p2d = np.array([u_coord, v_coord, np.ones_like(u_coord)])
     p3d = np.dot(intrinsic_matrix_inv, p2d) * depth_in_meters
 
     # Return [[X...], [Y...], [Z...]] and [[R...], [G...], [B...]] normalized
-    return p3d, color/255.0
+    return p3d, np.clip(color / 255.0, 0, 1)
 
 
 # Load the C library to downsample the point cloud

@@ -11,17 +11,18 @@ parser = argparse.ArgumentParser(
     prog='Get Point Cloud downsampled (ground truth) from RGBD',
     description='This script gets the point cloud from the RGB and Depth cameras, than downsample it and saves it in a .ply and .pcd files.',
 )
-parser.add_argument('--frames', '-F', default='40', help='Interval of frames to get the point cloud')
+parser.add_argument('--frames', '-F', default='20', help='Interval of frames to get the point cloud (default = 20')
 parser.add_argument('--pcl', '-P', help='Point Cloud path, if you want to add more pointclouds to an existing Point Cloud file')
-parser.add_argument('--leaf_size', '-L', default='0.1', help='Leaf size to downsample the point cloud (default = 10cm)')
+parser.add_argument('--leaf_size', '-L', default='0.06', help='Leaf size to downsample the point cloud (default = 5cm)')
+parser.add_argument('--interval', '-I', default='20', help='Interval of frames to downsample the point cloud (default = 20 frames)')
 
 arguments = parser.parse_args()
 
 
 def main():
     actor_list = []
-    IMG_WIDTH = 1280 # 800
-    IMG_HEIGHT = 720 # 600
+    IMG_WIDTH = 800
+    IMG_HEIGHT = 600
     colors = np.empty((0, 3))
     points = np.empty((0, 3))
     
@@ -35,7 +36,7 @@ def main():
             o3d.visualization.draw_geometries([pcl_downsampled])
         else:
             pcl_downsampled = o3d.geometry.PointCloud()
-                    
+        
         
         # Setup the world
         world, blueprint_library, traffic_manager = setup_carla()
@@ -46,7 +47,7 @@ def main():
         settings.synchronous_mode = True # Enables synchronous mode
         settings.fixed_delta_seconds = 0.05
         world.apply_settings(settings)
-            
+        
         # Vehicle
         vehicle = spawn_vehicle(world, blueprint_library)
         vehicle.set_autopilot(True)
@@ -54,19 +55,19 @@ def main():
         
         
         # Depth & RGB FRONT
-        camera_transform = carla.Transform(carla.Location(x=0.9, z=2.5))
+        camera_transform = carla.Transform(carla.Location(z=1.7))
         camera_depth_front = spawn_cameras('sensor.camera.depth', world, blueprint_library, vehicle, IMG_WIDTH, IMG_HEIGHT, camera_transform)
         camera_rgb_front = spawn_cameras('sensor.camera.rgb', world, blueprint_library, vehicle, IMG_WIDTH, IMG_HEIGHT, camera_transform)
         # Depth & RGB RIGHT
-        camera_transform_right = carla.Transform(carla.Location(x=0.9, z=2.5), carla.Rotation(yaw=90.0))
+        camera_transform_right = carla.Transform(carla.Location(z=1.7), carla.Rotation(yaw=90.0))
         camera_depth_right = spawn_cameras('sensor.camera.depth', world, blueprint_library, vehicle, IMG_WIDTH, IMG_HEIGHT, camera_transform_right)
         camera_rgb_right = spawn_cameras('sensor.camera.rgb', world, blueprint_library, vehicle, IMG_WIDTH, IMG_HEIGHT, camera_transform_right)
         # Depth & RGB LEFT
-        camera_transform_left = carla.Transform(carla.Location(x=0.9, z=2.5), carla.Rotation(yaw=-90.0))
+        camera_transform_left = carla.Transform(carla.Location(z=1.7), carla.Rotation(yaw=-90.0))
         camera_depth_left = spawn_cameras('sensor.camera.depth', world, blueprint_library, vehicle, IMG_WIDTH, IMG_HEIGHT, camera_transform_left)
         camera_rgb_left = spawn_cameras('sensor.camera.rgb', world, blueprint_library, vehicle, IMG_WIDTH, IMG_HEIGHT, camera_transform_left)
         # Depth & RGB BACK
-        camera_transform_back = carla.Transform(carla.Location(x=0, z=2.5), carla.Rotation(yaw=180.0))
+        camera_transform_back = carla.Transform(carla.Location(z=1.7), carla.Rotation(yaw=180.0))
         camera_depth_back = spawn_cameras('sensor.camera.depth', world, blueprint_library, vehicle, IMG_WIDTH, IMG_HEIGHT, camera_transform_back)
         camera_rgb_back = spawn_cameras('sensor.camera.rgb', world, blueprint_library, vehicle, IMG_WIDTH, IMG_HEIGHT, camera_transform_back)
         
@@ -156,7 +157,7 @@ def main():
 
                 print(f"PointCloud with {p3d_world_front.shape[0] + p3d_world_right.shape[0] + p3d_world_left.shape[0] + p3d_world_back.shape[0]} points")
 
-            if tick % 120 == 0:
+            if tick % int(arguments.interval) == 0:
                 
                 print("\n")
                 # Downsample the point cloud
@@ -170,21 +171,24 @@ def main():
                 # Create a point cloud to save the downsampled point cloud of the atually frame
                 frame_pcl_downsampled = o3d.geometry.PointCloud()
                 frame_pcl_downsampled.points.extend(o3d.utility.Vector3dVector(downsampled_points))
-                frame_pcl_downsampled.colors.extend(o3d.utility.Vector3dVector(downsampled_colors / 255.0))
+                downsampled_colors = np.clip(downsampled_colors / 255.0, 0, 1)
+                frame_pcl_downsampled.colors.extend(o3d.utility.Vector3dVector(downsampled_colors))
                 #o3d.visualization.draw_geometries([frame_pcl_downsampled])
                 
                 
                 # Add the downsampled point cloud of the frame to the total point cloud
                 pcl_downsampled.points.extend(frame_pcl_downsampled.points)
                 pcl_downsampled.colors.extend(frame_pcl_downsampled.colors)
-                
-                print("Saving the downsampled point cloud...")
-                o3d.io.write_point_cloud(f"./ground_truth_downsampled.ply", pcl_downsampled)
-                
-                print(f"---> Total Downsampled {pcl_downsampled}")
-                o3d.visualization.draw_geometries([pcl_downsampled]) # If you want to see the total point cloud every 120 frames
-                
+
+
+        print("Saving the downsampled point cloud...")
+        o3d.io.write_point_cloud(f"./ground_truth_downsampled.ply", pcl_downsampled)
+
+        print(f"---> Total Downsampled {pcl_downsampled}")
+        o3d.visualization.draw_geometries([pcl_downsampled]) # If you want to see the total point cloud every 120 frames
+        
     finally:
+
         for actor in actor_list:
             actor.destroy()
         print(f"All cleaned up!")

@@ -25,9 +25,13 @@ python3 ground_truth.py -F 30
 ```
 python3 ground_truth.py -P [PATH-TO-PCL-FILE]
 ```
-* The leaf size you want to downsample the Point Cloud (default = 0.05 (5cm)):
+* The leaf size you want to downsample the Point Cloud (default = 0.06 (6cm)):
 ```
 python3 ground_truth.py -L 0.1
+```
+* The interval of frames to downsample the point cloud (default = 20 frames)
+```
+python3 ground_truth.py -I 30
 ```
 ### To save and view the Point Cloud ground truth
 If you want to finish the 3D mapping click on the `"Q"` key to save and view the PCL.
@@ -38,6 +42,6 @@ python3 visualize_pcl.py
 ```
 
 ## Notes
-Based on this [repo](https://github.com/iaoqian/carla_3d-mapping_and_adding_virtual_objects/tree/main), I created my version with downsampling and some changes.
+Based on this [repo](https://github.com/iaoqian/carla_3d-mapping_and_adding_virtual_objects/tree/main), I created my version with downsampling and some changes to im
 
 
