@@ -42,6 +42,6 @@ python3 visualize_pcl.py
 ```
 
 ## Notes
-Based on this [repo](https://github.com/iaoqian/carla_3d-mapping_and_adding_virtual_objects/tree/main), I created my version with downsampling and some changes to im
+Based on this [repo](https://github.com/iaoqian/carla_3d-mapping_and_adding_virtual_objects/tree/main), I created my version with downsampling and some changes too.
 
 
