@@ -4,7 +4,10 @@
 The point cloud is downsampled using a voxelgrid filter with PCL library.
 
 
-## Quick Start
+## Install and run CARLA Sim
+### Install CARLA Sim
+You need to follow the steps for installing the CARLA Sim simulator at this link: https://carla.readthedocs.io/en/latest/start_quickstart/
+
 ### Clone this repository & run the Carla Sim
 ```
 git clone https://github.com/DaniCarias/Ground-Truth-Carla-Sim.git
@@ -12,7 +15,7 @@ cd [YOUR-PATH-TO-CARLA]
 .\CarlaUE4.sh
 ```
 
-### Get the ground truth
+## Get the ground truth
 ```
 python3 ground_truth.py
 ```
